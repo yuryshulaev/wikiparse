@@ -1,0 +1,43 @@
+{
+  "name": "wikiparse",
+  "version": "1.0.15",
+  "description": "Wikipedia/MediaWiki syntax parser",
+  "main": "index.js",
+  "module": "index.mjs",
+  "exports": {
+    ".": {
+      "require":  "./index.js",
+      "default": "./index.mjs"
+    }
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "files": [
+    "LICENSE",
+    "README.md",
+    "index.js",
+    "index.mjs",
+    "parser.js",
+    "test.js",
+    "text.js",
+    "wikiparser.js"
+  ],
+  "keywords": [
+    "wiki",
+    "wikipedia",
+    "mediawiki",
+    "syntax",
+    "parser"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yuryshulaev/wikiparse.git"
+  },
+  "homepage": "https://github.com/yuryshulaev/wikiparse",
+  "author": "Yury Shulaev <yury.shulaev@gmail.com> (https://github.com/yuryshulaev)",
+  "license": "MIT",
+  "devDependencies": {
+    "mocha": "^9.1.3"
+  }
+}
