@@ -551,6 +551,7 @@ f`),
 			parseOrThrow(`<gallery widths="123" heights=456>
 first.png
 second.jpg|Title
+
 </gallery>`),
 			[
 				{type: 'gallery', attributes: {widths: '123', heights: '456'}, items: [

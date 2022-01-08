@@ -487,7 +487,13 @@ class WikiParser extends Parser {
 
 		this.eatWhitespace();
 
-		while (this.isStartOfLine() && !this.startsWith('</gallery>')) {
+		while (this.isStartOfLine()) {
+			this.eatWhitespace();
+
+			if (this.startsWith('</gallery>')) {
+				break;
+			}
+
 			const toRaw = this.next({end: ['\n'], endBefore: ['|', '</gallery>']});
 
 			if (!toRaw) {
