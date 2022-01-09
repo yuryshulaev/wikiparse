@@ -70,7 +70,7 @@ class WikiParser extends Parser {
 
 		const nameContent = nameContentRaw.filter(part => part.type !== 'comment');
 
-		if (!nameContent.length) {
+		if (!nameContent.length || typeof nameContent[0] !== 'string') {
 			return null;
 		}
 
@@ -164,7 +164,7 @@ class WikiParser extends Parser {
 		const [to, anchor] = page[0].trim().split('#');
 		const content = positionalParameters.length ? positionalParameters.pop() : [to];
 
-		while (!this.isEnd() && this.str[this.pos.offset].match(/^\w/)) {
+		while (!this.isEnd() && this.str[this.pos.offset].match(/^\p{L}/u)) {
 			this.append(content, this.advance(this.str[this.pos.offset]));
 		}
 
