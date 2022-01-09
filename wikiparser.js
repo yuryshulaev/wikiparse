@@ -229,7 +229,7 @@ class WikiParser extends Parser {
 			return Object.assign({type, attributes}, type === 'tag' ? {name} : {});
 		}
 
-		let content = this.next({endAtEos: true, endBefore: [...endBefore, '</' + name, ']]', '}}', ...(name === 'span' ? ['\n'] : kEmpty)], allow, disallow});
+		let content = this.next({endAtEos: true, endBefore: [...endBefore, '</' + name, ']]', '}}'], allow, disallow});
 
 		if (trim) {
 			content = this.trim(content);
@@ -465,7 +465,7 @@ class WikiParser extends Parser {
 				attributes = {};
 			}
 
-			if (this.startsWithAny(['\n*', '\n#'])) {
+			while (this.startsWith('\n')) {
 				this.eat('\n');
 			}
 
@@ -567,7 +567,7 @@ if (require.main === module) {
 
 	(async function () {
 		const text = await getStdin();
-		console.log(util.inspect(parse(text), {depth: 20, colors: true, maxArrayLength: Infinity}));
+		console.log(util.inspect(parse(text, {throwError: true}), {depth: 20, colors: true, maxArrayLength: Infinity}));
 	})().catch(err => {
 		console.error(err);
 	});

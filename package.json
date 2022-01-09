@@ -1,6 +1,6 @@
 {
   "name": "wikiparse",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "Wikipedia/MediaWiki syntax parser",
   "main": "index.js",
   "module": "index.mjs",
