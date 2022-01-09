@@ -403,10 +403,17 @@ class WikiParser extends Parser {
 		}
 
 		do {
+			const commentsBefore = this.eatComments();
 			const row = this.tableRow(!content.length && !this.startsWith('|-'));
 
 			if (row == null) {
 				return null;
+			}
+
+			const comments = [...commentsBefore, ...(row.comments || []), ...this.eatComments()];
+
+			if (comments.length) {
+				row.comments = comments;
 			}
 
 			content.push(row);
@@ -421,6 +428,7 @@ class WikiParser extends Parser {
 
 	tableRow(started = false) {
 		const content = [];
+		const comments = [];
 		let attributes = {};
 
 		if (!started) {
@@ -431,6 +439,8 @@ class WikiParser extends Parser {
 			if (!this.eat('\n', false)) {
 				return null;
 			}
+
+			this.eatComments(comments);
 		}
 
 		do {
@@ -474,7 +484,7 @@ class WikiParser extends Parser {
 			content.push({type: 'table-cell', header, attributes, content: cell});
 		} while (!this.isEnd() && !this.startsWith('|}'));
 
-		return {type: 'table-row', attributes, content};
+		return {type: 'table-row', attributes, content, ...(comments.length ? {comments} : {})};
 	}
 
 	gallery() {
@@ -525,6 +535,23 @@ class WikiParser extends Parser {
 		}
 
 		return {attributes, items};
+	}
+
+	eatComments(comments = []) {
+		this.eatWhitespace();
+
+		while (this.startsWith('<!--')) {
+			const comment = this.node(['comment']);
+
+			if (!comment) {
+				return comments;
+			}
+
+			comments.push(comment);
+			this.eatWhitespace();
+		}
+
+		return comments;
 	}
 }
 

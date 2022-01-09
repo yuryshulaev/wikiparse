@@ -1,6 +1,6 @@
 {
   "name": "wikiparse",
-  "version": "1.0.16",
+  "version": "1.0.19",
   "description": "Wikipedia/MediaWiki syntax parser",
   "main": "index.js",
   "module": "index.mjs",
@@ -14,11 +14,11 @@
     "test": "mocha"
   },
   "files": [
-    "LICENSE",
-    "README.md",
     "index.js",
     "index.mjs",
+    "LICENSE",
     "parser.js",
+    "README.md",
     "test.js",
     "text.js",
     "wikiparser.js"

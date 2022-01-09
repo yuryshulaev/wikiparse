@@ -458,6 +458,23 @@ f`),
 		);
 	});
 
+	it('should parse tables with comments', () => {
+		assert.deepEqual(
+			parseOrThrow(`{|
+|-
+<!-- Comment -->
+|a
+|}`),
+			[{type: 'table', attributes: {}, caption: [], content: [
+				{type: 'table-row', attributes: {}, content: [
+					{type: 'table-cell', header: false, attributes: {}, content: [
+						'a',
+					]},
+				], comments: [{type: 'comment', content: ['Comment']}]},
+			]}]
+		);
+	});
+
 	it('should parse tables with lists', () => {
 		assert.deepEqual(
 			parseOrThrow(`{|
