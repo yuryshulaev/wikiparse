@@ -82,6 +82,17 @@ next `, {type: 'italics', content: ['line']}]
 		);
 	});
 
+	it('should parse category links', () => {
+		assert.deepEqual(
+			parseOrThrow(`[[Category:Categorize]][[:Category:Link]][[:Категория:Без префикса|]]`),
+			[
+				{type: 'link', to: 'Category:Categorize', content: ['Category:Categorize']},
+				{type: 'link', to: 'Category:Link', content: ['Category:Link'], plain: true},
+				{type: 'link', to: 'Категория:Без префикса', content: ['Без префикса'], plain: true},
+			]
+		);
+	});
+
 	it('should parse simple links with anchors', () => {
 		assert.deepEqual(
 			parseOrThrow(`Some [[Some page#Some anchor]], test`),

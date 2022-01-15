@@ -163,14 +163,24 @@ class WikiParser extends Parser {
 			return null;
 		}
 
-		const [to, anchor] = page[0].trim().split('#');
-		const content = positionalParameters.length ? positionalParameters.pop() : [to];
+		let [to, anchor] = page[0].trim().split('#');
+		const plain = to.startsWith(':');
+
+		if (plain) {
+			to = to.substr(1);
+		}
+
+		let content = positionalParameters.length ? positionalParameters.pop() : [to];
+
+		if (plain && !content.length) {
+			content = [to.replace(/^\p{L}+:/u, '')];
+		}
 
 		while (!this.isEnd() && this.str[this.pos.offset].match(/^\p{L}/u)) {
 			this.append(content, this.advance(this.str[this.pos.offset]));
 		}
 
-		const link = {to, content};
+		const link = {to, content, ...(plain ? {plain} : {})};
 
 		if (anchor) {
 			link.anchor = anchor;
