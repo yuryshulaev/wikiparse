@@ -116,9 +116,9 @@ class Parser {
 		return null;
 	}
 
-	next({end = kEmpty, endAtEos = false, notEnd = kEmpty, endBefore = kEmpty, stop = kEmpty, allow = null,
+	next({end = kEmpty, endAtEos = false, notEnd = kEmpty, endBefore = kEmpty, backtrack = kEmpty, allow = null,
 	      disallow = kEmpty, backtrackOn = null} = {}) {
-		if (!end.length && !endBefore.length && !stop.length && !endAtEos) {
+		if (!end.length && !endBefore.length && !backtrack.length && !endAtEos) {
 			return [];
 		}
 
@@ -138,7 +138,7 @@ class Parser {
 				break;
 			}
 
-			if (this.backtrackOn.some(x => x()) || this.startsWithAny(stop) || eos) {
+			if (this.backtrackOn.some(x => x()) || this.startsWithAny(backtrack) || eos) {
 				if (++this.backtrackingCount > this.options.backtrackingLimit) {
 					throw new BacktrackingLimitExceededError();
 				}

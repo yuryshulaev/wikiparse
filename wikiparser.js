@@ -14,17 +14,19 @@ class WikiParser extends Parser {
 			{type: 'externalLink', start: '[',
 				postCondition: () => this.startsWithRegex(/((https?|ftps?|sftp|git|svn|ircs?):)?\/\/|(mailto|magnet|tel|urn|xmpp|geo):/yi),
 				func: () => this.externalLink()},
-			{type: 'boldItalics', start: "'''''", end: ["'''''"], stop: [']]'], backtrackOn: this.isEndOfLine},
-			{type: 'bold', start: "'''", end: ["'''"], stop: [']]'], backtrackOn: this.isEndOfLine},
-			{type: 'italics', start: "''", end: ["''"], notEnd: ["'''"], stop: [']]'], disallow: ['preformatted'], backtrackOn: this.isEndOfLine},
+			{type: 'boldItalics', start: "'''''", end: ["'''''"], backtrack: [']]', '}}'], backtrackOn: this.isEndOfLine},
+			{type: 'bold', start: "'''", end: ["'''"], backtrack: [']]', '}}'], backtrackOn: this.isEndOfLine},
+			{type: 'italics', start: "''", end: ["''"], notEnd: ["'''"], backtrack: [']]', '}}'], disallow: ['preformatted'], backtrackOn: this.isEndOfLine},
 			{type: 'template', start: '{{', func: () => this.template()},
 			{type: 'templatePreformatted', start: '{{', func: () => this.template(kEmpty), postProcess: node =>
 				Object.assign({}, node, {type: 'template'})},
-			{type: 'unorderedList', start: '*', keepStart: true, preCondition: this.isStartOfLine, func: () => this.list('*')},
-			{type: 'orderedList', start: '#', keepStart: true, preCondition: this.isStartOfLine, func: () => this.list('#')},
-			{type: 'indent', start: ':', keepStart: true, preCondition: this.isStartOfLine, func: () => this.indent()},
-			{type: 'description', start: ';', preCondition: this.isStartOfLine, func: () => this.description()},
-			{type: 'heading', start: '=', keepStart: true, preCondition: this.isStartOfLine, func: () => this.heading()},
+			{start: '', preCondition: this.isStartOfLine, group: [
+				{type: 'unorderedList', start: '*', keepStart: true, func: () => this.list('*')},
+				{type: 'orderedList', start: '#', keepStart: true, func: () => this.list('#')},
+				{type: 'indent', start: ':', keepStart: true, func: () => this.indent()},
+				{type: 'description', start: ';', func: () => this.description()},
+				{type: 'heading', start: '=', keepStart: true, func: () => this.heading()},
+			]},
 			{name: 'htmlEntities', start: '&', group: [
 				{type: 'nbsp', start: 'nbsp;', replaceWith: ' '},
 				{type: 'lt', start: 'lt;', replaceWith: '<'},
@@ -90,7 +92,7 @@ class WikiParser extends Parser {
 
 		while (this.eat('|', false)) {
 			const originalPos = this.pos;
-			const nameContent = this.next({end: ['='], stop: ['|', '{{', '}}', '<'], allow: ['comment'], backtrackOn: this.isEndOfLine});
+			const nameContent = this.next({end: ['='], backtrack: ['|', '{{', '}}', '<'], allow: ['comment'], backtrackOn: this.isEndOfLine});
 
 			if (nameContent && nameContent.length) {
 				const name = nameContent[0].trim().toLowerCase();
@@ -131,7 +133,7 @@ class WikiParser extends Parser {
 
 		while (this.eat('|', false)) {
 			const originalPos = this.pos;
-			const nameContent = this.next({end: ['='], stop: ['|', '[[', ']]', '<'], allow: ['comment'], backtrackOn: this.isEndOfLine});
+			const nameContent = this.next({end: ['='], backtrack: ['|', '[[', ']]', '<'], allow: ['comment'], backtrackOn: this.isEndOfLine});
 
 			if (nameContent && nameContent.length) {
 				const name = nameContent[0].trim().toLowerCase();
@@ -295,7 +297,7 @@ class WikiParser extends Parser {
 	quotedString(closeQuoteOnNewline = false) {
 		this.eat('"');
 		const content = this.next({end: ['"'], endBefore: closeQuoteOnNewline ? ['\n'] : kEmpty,
-			stop: closeQuoteOnNewline ? kEmpty : ['\n'], allow: kEmpty});
+			backtrack: closeQuoteOnNewline ? kEmpty : ['\n'], allow: kEmpty});
 		return content != null ? content[0] || '' : null;
 	}
 
