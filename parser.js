@@ -118,7 +118,7 @@ class Parser {
 
 	next({end = kEmpty, endAtEos = false, notEnd = kEmpty, endBefore = kEmpty, endBeforeRegex = null, endOn = null, backtrack = kEmpty, allow = null,
 	      disallow = kEmpty, backtrackOn = null} = {}) {
-		if (!end.length && !endBefore.length && !endBeforeRegex && !backtrack.length && !endAtEos) {
+		if (!end.length && !endBefore.length && !endBeforeRegex && !endOn && !backtrack.length && !endAtEos) {
 			return [];
 		}
 

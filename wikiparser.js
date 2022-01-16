@@ -47,7 +47,7 @@ class WikiParser extends Parser {
 				{type: 'hr', start: '<hr', keepStart: true, func: () => this.tag({only: ['hr'], hasContent: false})},
 				{type: 'source', start: '<source', keepStart: true, func: () => this.tag({only: ['source'], type: 'source', allow: kEmpty})},
 				{type: 'math', start: '<math', keepStart: true,
-					func: () => this.tag({only: ['math'], type: 'math', disallow: ['template', 'templatePreformatted']})},
+					func: () => this.tag({only: ['math'], type: 'math', disallow: ['template', 'templatePreformatted'], endBefore: kEmpty})},
 				{type: 'ref', start: '<ref', keepStart: true, func: () => this.tag({only: ['ref'], type: 'ref'})},
 				{type: 'nowiki', start: '<nowiki', keepStart: true, func: () => this.tag({only: ['nowiki'], type: 'nowiki', allow: kEmpty}),
 					postProcess: node => node.content != null ? node : []},
@@ -208,7 +208,7 @@ class WikiParser extends Parser {
 		return {uri: uri.filter(part => typeof part === 'string').join(''), content};
 	}
 
-	tag({only = null, hasContent = true, type = 'tag', allow, disallow = ['preformatted'], endBefore = ['\n|', '\n!'], trim = true} = {}) {
+	tag({only = null, hasContent = true, type = 'tag', allow, disallow = ['preformatted'], endBefore = ['\n|', '\n!', '}}'], trim = true} = {}) {
 		this.eat('<');
 
 		if (this.isEnd() || !this.str[this.pos.offset].match(/^[a-z-]/i)) {
@@ -241,7 +241,7 @@ class WikiParser extends Parser {
 			return Object.assign({type, attributes}, type === 'tag' ? {name} : {});
 		}
 
-		let content = this.next({endAtEos: true, endBefore: [...endBefore, '</' + name, ']]', '}}'], allow, disallow});
+		let content = this.next({endAtEos: true, endBefore: [...endBefore, '</' + name, ']]'], allow, disallow});
 
 		if (trim) {
 			content = this.trim(content);
