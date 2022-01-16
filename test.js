@@ -268,8 +268,18 @@ next `, {type: 'italics', content: ['line']}]
 				{
 					type: 'indent',
 					items: [
-						{level: 1, content: [{type: 'italics', content: ['a']}, ' b']},
-						{level: 2, content: ['c :d']},
+						{
+							content: [
+								{type: 'italics', content: ['a']},
+								' b',
+								{
+									type: 'indent',
+									items: [
+										{content: ['c :d']},
+									],
+								},
+							],
+						},
 					],
 				},
 			]

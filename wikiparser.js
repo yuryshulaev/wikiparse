@@ -321,26 +321,35 @@ class WikiParser extends Parser {
 		while (this.isStartOfLine() && this.startsWith(character)) {
 			const level = this.eatCount(character);
 			let content = [];
-
-			if (this.startsWith(':')) {
-				this.append(content, [Object.assign({type: 'indent'}, this.indent(true))]);
-			}
-
 			this.append(content, this.next({end: ['\n'], endAtEos: true, endBefore: ['}}', '</']}));
 			content = this.trim(content);
+
+			if (this.isStartOfLine() && this.startsWith(character.repeat(level) + ':')) {
+				this.append(content, [Object.assign({type: 'indent'}, this.indent(character.repeat(level)))]);
+			}
+
 			items.push({level, content});
 		}
 
 		return {items};
 	}
 
-	indent(start = false) {
+	indent(prefix = '') {
 		const items = [];
 
-		while ((start || this.isStartOfLine()) && this.startsWith(':')) {
+		while (this.isStartOfLine() && this.startsWith(prefix + ':')) {
+			if (prefix) {
+				this.eat(prefix);
+			}
+
 			const level = this.eatCount(':');
 			const content = this.trim(this.next({end: ['\n'], endAtEos: true, endBefore: ['}}', '</']}));
-			items.push({level, content});
+
+			if (this.isStartOfLine() && this.startsWith(prefix + ':'.repeat(level + 1))) {
+				this.append(content, [Object.assign({type: 'indent'}, this.indent(prefix + ':'.repeat(level)))]);
+			}
+
+			items.push({content});
 		}
 
 		return {items};
