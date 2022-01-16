@@ -490,7 +490,11 @@ class WikiParser extends Parser {
 				this.eat('\n');
 			}
 
-			const cell = this.trim(this.next({end: ['\n'], endBefore: ['|', '!!'], disallow: ['preformatted']}));
+			const cell = this.trim(this.next({
+				endBeforeRegex: /\n\s*[!|]|[!|]{2}|\|\}/y,
+				endOn: () => this.isStartOfLine() && this.startsWithRegex(/\s*[!|]/y),
+				disallow: ['preformatted'],
+			}));
 
 			if (cell == null) {
 				return null;
@@ -500,6 +504,8 @@ class WikiParser extends Parser {
 				this.eat('|');
 			} else if (this.startsWith('!!')) {
 				this.eat('!');
+			} else {
+				this.eatWhitespace();
 			}
 
 			content.push({type: 'table-cell', header, attributes, content: cell});

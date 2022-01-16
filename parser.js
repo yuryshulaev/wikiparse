@@ -116,9 +116,9 @@ class Parser {
 		return null;
 	}
 
-	next({end = kEmpty, endAtEos = false, notEnd = kEmpty, endBefore = kEmpty, backtrack = kEmpty, allow = null,
+	next({end = kEmpty, endAtEos = false, notEnd = kEmpty, endBefore = kEmpty, endBeforeRegex = null, endOn = null, backtrack = kEmpty, allow = null,
 	      disallow = kEmpty, backtrackOn = null} = {}) {
-		if (!end.length && !endBefore.length && !backtrack.length && !endAtEos) {
+		if (!end.length && !endBefore.length && !endBeforeRegex && !backtrack.length && !endAtEos) {
 			return [];
 		}
 
@@ -163,6 +163,14 @@ class Parser {
 			}
 
 			if (this.startsWithAny(endBefore)) {
+				break;
+			}
+
+			if (endBeforeRegex && this.startsWithRegex(endBeforeRegex)) {
+				break;
+			}
+
+			if (endOn && endOn()) {
 				break;
 			}
 

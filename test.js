@@ -463,6 +463,7 @@ f`),
  |- style=""
 	| 1
  | 2
+3
  |}`),
 			[
 				{type: 'table', attributes: {class: 'wikitable'}, caption: [], content: [
@@ -472,7 +473,7 @@ f`),
 					]},
 					{type: 'table-row', attributes: {style: ''}, content: [
 						{type: 'table-cell', header: false, attributes: {}, content: ['1']},
-						{type: 'table-cell', header: false, attributes: {}, content: ['2']},
+						{type: 'table-cell', header: false, attributes: {}, content: ['2\n3']},
 					]},
 				]},
 			]
